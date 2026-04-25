@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>luisedww1-dev · GitHub</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --border-subtle: #21262d;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --accent: #238636;
+    --accent-light: #2ea043;
+    --link: #58a6ff;
+    --tag: #1f6feb;
+    --tag-bg: #388bfd1a;
+    --yellow: #d29922;
+    --red: #da3633;
+    --purple: #8957e5;
+    --teal: #1f6feb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-logo {
+    color: var(--text);
+    font-size: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-logo svg { opacity: 0.9; }
+  .topbar-search {
+    flex: 1;
+    max-width: 280px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    outline: none;
+  }
+  .topbar-nav {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .topbar-nav a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .topbar-nav a:hover { color: var(--text); background: var(--border-subtle); }
+
+  /* LAYOUT */
+  .wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: grid;
+    grid-template-columns: 296px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* SIDEBAR */
+  .avatar-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--border);
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #1a2744 0%, #0f2942 40%, #1a1f35 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    letter-spacing: -2px;
+  }
+  .avatar-initials {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 72px;
+    font-weight: 500;
+    color: #3b82f6;
+    opacity: 0.85;
+    line-height: 1;
+    user-select: none;
+  }
+  .status-dot {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 18px;
+    height: 18px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+  }
+
+  .profile-name {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .profile-username {
+    font-size: 18px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+  .profile-bio {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .follow-btn {
+    width: 100%;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 16px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .follow-btn:hover { background: var(--border-subtle); border-color: #8b949e; }
+
+  .profile-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .profile-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .profile-meta-item svg { flex-shrink: 0; opacity: 0.7; }
+  .profile-meta-item a { color: var(--link); text-decoration: none; }
+  .profile-meta-item a:hover { text-decoration: underline; }
+
+  .followers-line {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .followers-line strong { color: var(--text); }
+  .followers-line a { color: var(--muted); text-decoration: none; }
+  .followers-line a:hover { color: var(--link); }
+
+  .sidebar-section {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+  .sidebar-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .orgs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .org-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .org-badge:hover { border-color: var(--link); color: var(--link); }
+
+  /* MAIN CONTENT */
+  .main-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    gap: 0;
+  }
+  .tab {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--text);
+    border-bottom-color: #f78166;
+    font-weight: 500;
+  }
+  a.tab {
+    text-decoration: none;
+  }
+  .tab-count {
+    background: var(--border);
+    border-radius: 20px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* PINNED SECTION */
+  .section-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label span { color: var(--muted); font-weight: 400; font-size: 13px; }
+
+  .pinned-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .repo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+  .repo-card:hover { border-color: #58a6ff55; }
+
+  .repo-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .repo-icon { color: var(--muted); flex-shrink: 0; }
+  .repo-name {
+    color: var(--link);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  .repo-name:hover { text-decoration: underline; }
+  .repo-visibility {
+    margin-left: auto;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1px 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .repo-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .repo-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .lang-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+  }
+  .lang-item { display: flex; align-items: center; }
+  .stars { display: flex; align-items: center; gap: 4px; }
+  .stars svg { opacity: 0.7; }
+
+  /* CONTRIBUTION GRAPH */
+  .contrib-section {
+    margin-bottom: 24px;
+  }
+  .contrib-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .contrib-count {
+    font-size: 14px;
+    color: var(--text);
+  }
+  .contrib-count strong { font-weight: 600; }
+  .contrib-link {
+    font-size: 12px;
+    color: var(--link);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .contrib-link:hover { text-decoration: underline; }
+
+  .contrib-graph {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+  }
+
+  .graph-months {
+    display: grid;
+    grid-template-columns: 28px repeat(52, 13px);
+    gap: 0;
+    margin-bottom: 4px;
+  }
+  .month-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .graph-rows {
+    display: grid;
+    grid-template-columns: 28px repeat(52, 13px);
+    gap: 0;
+    row-gap: 2px;
+  }
+  .day-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    align-items: center;
+    padding-top: 2px;
+  }
+  .graph-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .day-cell {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    background: var(--border-subtle);
+    transition: all 0.1s;
+  }
+  .day-cell:hover { outline: 1px solid rgba(255,255,255,0.3); }
+  .day-cell.l1 { background: #0e4429; }
+  .day-cell.l2 { background: #006d32; }
+  .day-cell.l3 { background: #26a641; }
+  .day-cell.l4 { background: #39d353; }
+
+  .graph-legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: flex-end;
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .legend-cell {
+    width: 11px; height: 11px;
+    border-radius: 2px;
+  }
+
+  /* RECENT REPOS */
+  .repos-list { display: flex; flex-direction: column; gap: 0; }
+  .repo-list-item {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .repo-list-item:last-child { border-bottom: none; }
+  .repo-list-left { flex: 1; }
+  .repo-list-name {
+    color: var(--link);
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .repo-list-name:hover { text-decoration: underline; }
+  .repo-list-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    max-width: 560px;
+    line-height: 1.5;
+  }
+  .repo-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .repo-tag {
+    background: var(--tag-bg);
+    color: #58a6ff;
+    border-radius: 20px;
+    padding: 1px 10px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .repo-list-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .repo-list-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    padding-top: 4px;
+  }
+  .star-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .star-btn:hover { background: var(--border-subtle); border-color: #8b949e; }
+  .updated-text { font-size: 11px; color: var(--muted); }
+
+  /* FOOTER STRIP */
+  .footer {
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    padding: 24px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .footer a { color: var(--muted); text-decoration: none; }
+  .footer a:hover { color: var(--link); }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .wrapper { animation: fadeIn 0.4s ease; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg height="24" width="24" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+    </svg>
+    GitHub
+  </div>
+  <input class="topbar-search" type="text" placeholder="Search or jump to...">
+  <nav class="topbar-nav">
+    <a href="#">Pull requests</a>
+    <a href="#">Issues</a>
+    <a href="#">Marketplace</a>
+    <a href="#">Explore</a>
+  </nav>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="avatar-wrap">
+      <div class="avatar-initials">LC</div>
+      <div class="status-dot"></div>
+    </div>
+
+    <div class="profile-name">Luis Peña</div>
+    <div class="profile-username">penagomezluis0-sudo</div>
+    <div class="profile-bio">Service Delivery & Ops tooling. Building workflow automation, SLA dashboards, and delivery utilities for software teams. Bogotá 🇨🇴</div>
+
+    <button class="follow-btn">Follow</button>
+
+    <div class="followers-line">
+      <a href="#"><strong>148</strong> followers</a>
+      <a href="#"><strong>61</strong> following</a>
+    </div>
+
+    <div class="profile-meta">
+      <div class="profile-meta-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 14.25c0 .138.112.25.25.25H4v-1.25a.75.75 0 01.75-.75h2.5a.75.75 0 01.75.75v1.25h2.25a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25h-8.5a.25.25 0 00-.25.25v12.5zM1.75 0h8.5C11.216 0 12 .784 12 1.75v12.5A1.75 1.75 0 0110.25 16h-8.5A1.75 1.75 0 010 14.25V1.75C0 .784.784 0 1.75 0z"/></svg>
+        Zensar · DXC · Sutherland · Carvajal
+      </div>
+      <div class="profile-meta-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"/><path d="M8 3.25a.75.75 0 01.75.75v3.25l2.5 1.5a.75.75 0 11-.75 1.3l-2.75-1.65A.75.75 0 017.25 7.5V4A.75.75 0 018 3.25z"/></svg>
+        Bogotá, Colombia
+      </div>
+      <div class="profile-meta-item">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg>
+        <a href="https://www.linkedin.com/in/luis-pe%C3%B1a-aa254bb2/">linkedin.com/in/luis-peña</a>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Organizations</div>
+      <div class="orgs">
+        <div class="org-badge">ZN</div>
+        <div class="org-badge">DXC</div>
+        <div class="org-badge">CT</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="main-tabs">
+      <div class="tab active">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+        Overview
+      </div>
+      <a class="tab" href="https://github.com/penagomezluis0-sudo?tab=repositories">Repositories <span class="tab-count">14</span></a>
+      <a class="tab" href="https://github.com/penagomezluis0-sudo?tab=projects">Projects <span class="tab-count">3</span></a>
+      <a class="tab" href="https://github.com/penagomezluis0-sudo?tab=stars">Stars <span class="tab-count">27</span></a>
+    </div>
+
+    <!-- PINNED -->
+    <div class="section-label">
+      📌 Pinned <span>— selected by luisedww1-dev</span>
+    </div>
+    <div class="pinned-grid">
+
+      <div class="repo-card">
+        <div class="repo-card-header">
+          <svg class="repo-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+          <a class="repo-name" href="https://github.com/penagomezluis0-sudo/sla-tracker">sla-tracker</a>
+          <span class="repo-visibility">Public</span>
+        </div>
+        <div class="repo-desc">SLA monitoring dashboard for multi-product delivery teams. Tracks ticket aging, breach risk, and team throughput via Jira API integration.</div>
+        <div class="repo-meta">
+          <span class="lang-item"><span class="lang-dot" style="background:#f1e05a;"></span>JavaScript</span>
+          <span class="stars">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+            23
+          </span>
+        </div>
+      </div>
+
+      <div class="repo-card">
+        <div class="repo-card-header">
+          <svg class="repo-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+          <a class="repo-name" href="https://github.com/penagomezluis0-sudo/incident-rca-cli">incident-rca-cli</a>
+          <span class="repo-visibility">Public</span>
+        </div>
+        <div class="repo-desc">CLI tool for structured Root Cause Analysis using 5-Whys methodology. Outputs formatted Markdown and JIRA-ready summaries from interactive prompts.</div>
+        <div class="repo-meta">
+          <span class="lang-item"><span class="lang-dot" style="background:#3572A5;"></span>Python</span>
+          <span class="stars">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+            18
+          </span>
+        </div>
+      </div>
+
+      <div class="repo-card">
+        <div class="repo-card-header">
+          <svg class="repo-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+          <a class="repo-name" href="https://github.com/penagomezluis0-sudo/ops-report-gen">ops-report-gen</a>
+          <span class="repo-visibility">Public</span>
+        </div>
+        <div class="repo-desc">Automated weekly delivery report generator. Pulls Jira sprint data, formats KPIs, and exports to PDF/HTML for client distribution.</div>
+        <div class="repo-meta">
+          <span class="lang-item"><span class="lang-dot" style="background:#3572A5;"></span>Python</span>
+          <span class="stars">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+            11
+          </span>
+        </div>
+      </div>
+
+      <div class="repo-card">
+        <div class="repo-card-header">
+          <svg class="repo-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+          <a class="repo-name" href="https://github.com/penagomezluis0-sudo/release-checklist-bot">release-checklist-bot</a>
+          <span class="repo-visibility">Public</span>
+        </div>
+        <div class="repo-desc">Slack bot that enforces pre-release checklists for engineering teams. Blocks merges to main until all delivery criteria are confirmed by SDM.</div>
+        <div class="repo-meta">
+          <span class="lang-item"><span class="lang-dot" style="background:#f1e05a;"></span>JavaScript</span>
+          <span class="stars">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+            9
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CONTRIBUTION GRAPH -->
+    <div class="contrib-section">
+      <div class="contrib-header">
+        <div class="contrib-count"><strong>412 contributions</strong> in the last year</div>
+        <a class="contrib-link" href="#">Contribution settings ▾</a>
+      </div>
+      <div class="contrib-graph" id="graph-container">
+        <div id="contrib-graph-inner"></div>
+        <div class="graph-legend">
+          Less
+          <div class="legend-cell" style="background:var(--border-subtle)"></div>
+          <div class="legend-cell" style="background:#0e4429"></div>
+          <div class="legend-cell" style="background:#006d32"></div>
+          <div class="legend-cell" style="background:#26a641"></div>
+          <div class="legend-cell" style="background:#39d353"></div>
+          More
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT REPOS -->
+    <div class="section-label" style="margin-top:24px;">
+      Recent repositories
+    </div>
+    <div class="repos-list">
+
+      <div class="repo-list-item">
+        <div class="repo-list-left">
+          <a class="repo-list-name" href="https://github.com/penagomezluis0-sudo/customer-health-score">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:var(--muted)"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+            customer-health-score
+          </a>
+          <div class="repo-list-desc">Configurable customer health scoring engine. Weights usage, SLA compliance, ticket volume, and CSAT signals. Outputs tiered risk segments (green/yellow/red).</div>
+          <div class="repo-tags">
+            <span class="repo-tag">python</span>
+            <span class="repo-tag">customer-success</span>
+            <span class="repo-tag">analytics</span>
+          </div>
+          <div class="repo-list-meta">
+            <span class="lang-item"><span class="lang-dot" style="background:#3572A5;"></span>Python</span>
+            <span>⭐ 14</span>
+            <span>Updated 3 weeks ago</span>
+          </div>
+        </div>
+        <div class="repo-list-right">
+          <button class="star-btn">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+            Star
+          </button>
+        </div>
+      </div>
+
+      <div class="repo-list-item">
+        <div class="repo-list-left">
+          <a class="repo-list-name" href="https://github.com/penagomezluis0-sudo/sprint-velocity-viz">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:var(--muted)"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+            sprint-velocity-viz
+          </a>
+          <div class="repo-list-desc">Lightweight Plotly dashboard for sprint velocity, story point completion, and team capacity. Reads from Jira CSV exports or direct REST API.</div>
+          <div class="repo-tags">
+            <span class="repo-tag">jira</span>
+            <span class="repo-tag">agile</span>
+            <span class="repo-tag">visualization</span>
+          </div>
+          <div class="repo-list-meta">
+            <span class="lang-item"><span class="lang-dot" style="background:#3572A5;"></span>Python</span>
+            <span>⭐ 8</span>
+            <span>Updated last month</span>
+          </div>
+        </div>
+        <div class="repo-list-right">
+          <button class="star-btn">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+            Star
+          </button>
+        </div>
+      </div>
+
+      <div class="repo-list-item">
+        <div class="repo-list-left">
+          <a class="repo-list-name" href="https://github.com/penagomezluis0-sudo/onboarding-playbook-template">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="color:var(--muted)"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/></svg>
+            onboarding-playbook-template
+          </a>
+          <div class="repo-list-desc">Markdown-based client onboarding playbook template for SaaS delivery teams. Covers kickoff, milestone planning, escalation matrix, and success criteria definition.</div>
+          <div class="repo-tags">
+            <span class="repo-tag">documentation</span>
+            <span class="repo-tag">onboarding</span>
+            <span class="repo-tag">template</span>
+          </div>
+          <div class="repo-list-meta">
+            <span class="lang-item"><span class="lang-dot" style="background:#e34c26;"></span>Markdown</span>
+            <span>⭐ 31</span>
+            <span>Updated 2 months ago</span>
+          </div>
+        </div>
+        <div class="repo-list-right">
+          <button class="star-btn">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+            Star
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<div class="footer">
+  <a href="#">© 2025 GitHub, Inc.</a>
+  <a href="#">Terms</a>
+  <a href="#">Privacy</a>
+  <a href="#">Security</a>
+  <a href="#">Status</a>
+  <a href="#">Docs</a>
+  <a href="#">Contact</a>
+</div>
+
+<script>
+// Generate contribution graph
+const container = document.getElementById('contrib-graph-inner');
+
+const months = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+const monthRow = document.createElement('div');
+monthRow.style.cssText = 'display:flex; gap:0; margin-bottom:4px; padding-left:28px;';
+
+months.forEach((m, i) => {
+  const label = document.createElement('div');
+  label.textContent = m;
+  label.style.cssText = `font-size:10px; color:#7d8590; font-family:'JetBrains Mono',monospace; width:${i===0?'26px':'52px'}; flex-shrink:0;`;
+  monthRow.appendChild(label);
+});
+container.appendChild(monthRow);
+
+const dayLabels = ['','Mon','','Wed','','Fri',''];
+const gridWrap = document.createElement('div');
+gridWrap.style.cssText = 'display:flex; gap:3px;';
+
+// Day labels column
+const dayCol = document.createElement('div');
+dayCol.style.cssText = 'display:flex; flex-direction:column; gap:2px; width:24px;';
+dayLabels.forEach(d => {
+  const lbl = document.createElement('div');
+  lbl.textContent = d;
+  lbl.style.cssText = 'height:11px; font-size:9px; color:#7d8590; font-family:"JetBrains Mono",monospace; display:flex; align-items:center;';
+  dayCol.appendChild(lbl);
+});
+gridWrap.appendChild(dayCol);
+
+// Generate 52 weeks of data
+for (let w = 0; w < 52; w++) {
+  const col = document.createElement('div');
+  col.style.cssText = 'display:flex; flex-direction:column; gap:2px;';
+  for (let d = 0; d < 7; d++) {
+    const cell = document.createElement('div');
+    cell.style.cssText = 'width:11px; height:11px; border-radius:2px;';
+    const r = Math.random();
+    // Weighted toward mid-range activity
+    let level = 0;
+    if (r > 0.45) level = 1;
+    if (r > 0.65) level = 2;
+    if (r > 0.82) level = 3;
+    if (r > 0.93) level = 4;
+    // Weekends a bit quieter
+    if ((d === 0 || d === 6) && Math.random() > 0.3) level = Math.max(0, level - 1);
+    const colors = ['#161b22','#0e4429','#006d32','#26a641','#39d353'];
+    cell.style.background = colors[level];
+    cell.title = `${level > 0 ? level * 2 + ' contributions' : 'No contributions'}`;
+    col.appendChild(cell);
+  }
+  gridWrap.appendChild(col);
+}
+container.appendChild(gridWrap);
+</script>
+</body>
+</html>
